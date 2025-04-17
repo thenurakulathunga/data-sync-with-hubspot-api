@@ -17,6 +17,9 @@
                 </div>
             </div>
         </div>
+        <livewire:toast-notification />
+    
+    @livewireScripts
         @fluxScripts
     </body>
 </html>

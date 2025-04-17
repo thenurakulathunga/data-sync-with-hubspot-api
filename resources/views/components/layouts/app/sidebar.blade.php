@@ -15,6 +15,10 @@
                 <flux:navlist.group :heading="__('Platform')" class="grid">
                     <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
                 </flux:navlist.group>
+                <flux:navlist.group heading="Objects" expandable :expanded="request()->routeIs('dashboard.objects.*') ?? false">
+                    <flux:navlist.item href="{{route('dashboard.objects.companies.index')}}">Companies</flux:navlist.item>
+                    <flux:navlist.item href="{{ route('dashboard.objects.contact.index')}}">Contacts</flux:navlist.item>
+                </flux:navlist.group>
             </flux:navlist>
 
             <flux:spacer />
@@ -124,9 +128,10 @@
                 </flux:menu>
             </flux:dropdown>
         </flux:header>
-
         {{ $slot }}
-
+        <livewire:toast-notification />
+    
+        @livewireScripts
         @fluxScripts
     </body>
 </html>

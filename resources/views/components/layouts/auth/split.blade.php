@@ -39,5 +39,8 @@
             </div>
         </div>
         @fluxScripts
+        <livewire:toast-notification />
+    
+    @livewireScripts
     </body>
 </html>

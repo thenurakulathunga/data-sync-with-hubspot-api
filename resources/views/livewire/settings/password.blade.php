@@ -16,6 +16,7 @@ new class extends Component {
      */
     public function updatePassword(): void
     {
+       
         try {
             $validated = $this->validate([
                 'current_password' => ['required', 'string', 'current_password'],
@@ -46,21 +47,21 @@ new class extends Component {
                 wire:model="current_password"
                 :label="__('Current password')"
                 type="password"
-                required
+                {{-- required --}}
                 autocomplete="current-password"
             />
             <flux:input
                 wire:model="password"
                 :label="__('New password')"
                 type="password"
-                required
+                {{-- required --}}
                 autocomplete="new-password"
             />
             <flux:input
                 wire:model="password_confirmation"
                 :label="__('Confirm Password')"
                 type="password"
-                required
+                {{-- required --}}
                 autocomplete="new-password"
             />
 

@@ -118,7 +118,9 @@
         </flux:sidebar>
 
         {{ $slot }}
-
+        <livewire:toast-notification />
+    
+        @livewireScripts
         @fluxScripts
     </body>
 </html>
