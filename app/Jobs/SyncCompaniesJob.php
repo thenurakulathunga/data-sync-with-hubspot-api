@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Events\ToastTrigger;
 use App\Http\Integrations\Hubspot\HubspotConnector;
 use App\Http\Integrations\Hubspot\Objects\Companies\Requests\Create;
 use Illuminate\Bus\Queueable;
@@ -9,6 +10,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 use Saloon\Exceptions\Request\RequestException as RequestRequestException;
 use Saloon\Http\Response as HttpResponse;
 
@@ -58,7 +60,7 @@ class SyncCompaniesJob implements ShouldQueue
         ];
 
         $request = new Create($request);
-        $request->headers()->add('Authorization', 'Bearer '.config('services.hubspot.api_key'));
+        $request->headers()->add('Authorization', 'Bearer ' . config('services.hubspot.api_key'));
         $confection = new HubspotConnector;
         $promise = $confection->sendAsync($request);
 
@@ -68,27 +70,40 @@ class SyncCompaniesJob implements ShouldQueue
                 cache()->remember('Companies', now()->addDay(), function () use ($response) {
                     return $response->json();
                 });
-                $this->dispatch('showToast', [
-                    'type' => 'success',
-                    'message' => 'Number of 10 companies sync successfully!',
-                ]);
-                info('Response', [
+
+                ToastTrigger::dispatch(
+                    'Job completed successfully!',
+                    'success',
+                    3000
+                );
+
+                logger()->debug('Response', [
                     'status' => $response->status(),
                     'body' => $response->json(),
                 ]);
             })
             ->otherwise(function (RequestRequestException $exception) {
                 // Handle Exception
-                $this->dispatch('showToast', [
-                    'type' => 'success',
-                    'message' => 'Number of 10 companies sync unsuccess!',
-                ]);
-                info('Exception', [
+                ToastTrigger::dispatch(
+                    'Number of 10 companies sync unsuccess!',
+                    'error',
+                    3000
+                );
+                logger()->error('Exception', [
                     'status' => $exception->getCode(),
                     'message' => $exception->getMessage(),
                 ]);
             });
 
         $promise->wait();
+    }
+    public function failed(\Throwable $exception)
+    {
+        logger()->error('Company sync failed after retries', [
+            'error' => $exception->getMessage(),
+            'companies' => $this->companies
+        ]);
+
+        // You could also dispatch a notification here
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Events\ToastTrigger;
 use App\Http\Integrations\Hubspot\HubspotConnector;
 use App\Http\Integrations\Hubspot\Objects\Contacts\Requests\Create;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -40,8 +41,8 @@ class SyncContactJob implements ShouldQueue
             ];
 
             $request = [
-                'iadProperty' => 'email',
-                'id' => $contact['email'],
+                // 'iadProperty' => 'email',
+                // 'id' => $contact['email'],
                 // 'objectWriteTraceId' => Str::uuid(), // Optional
                 'properties' => $properties,
             ];
@@ -70,18 +71,20 @@ class SyncContactJob implements ShouldQueue
             'inputs' => $inputs,
         ];
 
+        // logger()->info('This is the request',$request);
         $request = new Create($request);
-        $request->headers()->add('Authorization', 'Bearer '.config('services.hubspot.api_key'));
+        $request->headers()->add('Authorization', 'Bearer ' . config('services.hubspot.api_key'));
         $confection = new HubspotConnector;
         $promise = $confection->sendAsync($request);
 
         $promise
             ->then(function (Response $response) {
                 // Handle Response
-                $this->dispatch('showToast', [
-                    'type' => 'success',
-                    'message' => 'Number of 10 contacts sync successfully!',
-                ]);
+                ToastTrigger::dispatch(
+                    'Number of 10 contacts sync successfully!',
+                    'success',
+                    3000
+                );
 
                 info('Response', [
                     'status' => $response->status(),
@@ -90,10 +93,12 @@ class SyncContactJob implements ShouldQueue
             })
             ->otherwise(function (RequestException $exception) {
                 // Handle Exception
-                $this->dispatch('showToast', [
-                    'type' => 'success',
-                    'message' => 'Number of 10 contacts sync unsuccess!',
-                ]);
+
+                ToastTrigger::dispatch(
+                    'Number of 10 contacts sync unsuccess!',
+                    'error',
+                    3000
+                );
 
                 info('Exception', [
                     'status' => $exception->getCode(),
