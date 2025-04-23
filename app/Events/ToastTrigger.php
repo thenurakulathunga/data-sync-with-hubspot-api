@@ -3,10 +3,10 @@
 namespace App\Events;
 
 use Illuminate\Broadcasting\Channel;
+use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Broadcasting\InteractsWithSockets;
 
 class ToastTrigger implements ShouldBroadcast
 {
@@ -20,7 +20,7 @@ class ToastTrigger implements ShouldBroadcast
         logger()->info('ToastTrigger fired', [
             'message' => $message,
             'type' => $type,
-            'duration' => $duration
+            'duration' => $duration,
         ]);
     }
 
@@ -36,7 +36,7 @@ class ToastTrigger implements ShouldBroadcast
         return [
             'message' => $this->message,
             'type' => $this->type,
-            'duration' => $this->duration
+            'duration' => $this->duration,
         ];
     }
 }

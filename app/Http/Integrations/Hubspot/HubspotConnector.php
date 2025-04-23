@@ -9,8 +9,11 @@ use Saloon\Traits\Plugins\HasTimeout;
 class HubspotConnector extends Connector
 {
     use AcceptsJson, HasTimeout;
+
     protected int $connectTimeout = 60;
+
     protected int $requestTimeout = 120;
+
     /**
      * The Base URL of the API
      */

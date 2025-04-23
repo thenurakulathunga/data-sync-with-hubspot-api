@@ -29,7 +29,6 @@ class Index extends Component
 
         $this->getCachedCompany();
 
-
         $import = new ContactImport;
         Excel::import($import, $this->contactCsv);
 
@@ -69,7 +68,7 @@ class Index extends Component
     {
         try {
             $request = new FetchAllCompanies;
-            $request->headers()->add('Authorization', 'Bearer ' . config('services.hubspot.api_key'));
+            $request->headers()->add('Authorization', 'Bearer '.config('services.hubspot.api_key'));
 
             $confection = new HubspotConnector;
             $response = $confection->send($request);

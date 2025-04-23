@@ -10,7 +10,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Log;
 use Saloon\Exceptions\Request\RequestException as RequestRequestException;
 use Saloon\Http\Response as HttpResponse;
 
@@ -60,14 +59,14 @@ class SyncCompaniesJob implements ShouldQueue
         ];
 
         $request = new Create($request);
-        $request->headers()->add('Authorization', 'Bearer ' . config('services.hubspot.api_key'));
+        $request->headers()->add('Authorization', 'Bearer '.config('services.hubspot.api_key'));
         $confection = new HubspotConnector;
         $promise = $confection->sendAsync($request);
 
         $promise
             ->then(function (HttpResponse $response) {
                 // Handle Response
-                cache()->put('Companies',  $response->json(),now()->addDay());
+                cache()->put('Companies', $response->json(), now()->addDay());
 
                 ToastTrigger::dispatch(
                     'Job completed successfully!',
@@ -95,11 +94,12 @@ class SyncCompaniesJob implements ShouldQueue
 
         $promise->wait();
     }
+
     public function failed(\Throwable $exception)
     {
         logger()->error('Company sync failed after retries', [
             'error' => $exception->getMessage(),
-            'companies' => $this->companies
+            'companies' => $this->companies,
         ]);
 
         // You could also dispatch a notification here

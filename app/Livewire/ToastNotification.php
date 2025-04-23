@@ -7,8 +7,11 @@ use Livewire\Component;
 class ToastNotification extends Component
 {
     public string $message = '';
+
     public string $type = 'success';
+
     public bool $show = false;
+
     public int $duration = 5000;
 
     protected function getListeners()
@@ -28,7 +31,6 @@ class ToastNotification extends Component
 
         $this->dispatch('start-toast-timer', ['duration' => $this->duration]);
     }
-
 
     public function hide(): void
     {

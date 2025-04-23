@@ -25,7 +25,7 @@ class CompaniesImport implements ToCollection
 
         $missingHeaders = array_diff($this->validHeaders, $mappedHeaders);
 
-        if (!empty($missingHeaders)) {
+        if (! empty($missingHeaders)) {
             $this->toastError('Invalid CSV!');
             throw ValidationException::withMessages([
                 'companiesCsv' => 'Invalid CSV!',

@@ -73,7 +73,7 @@ class SyncContactJob implements ShouldQueue
 
         // logger()->info('This is the request',$request);
         $request = new Create($request);
-        $request->headers()->add('Authorization', 'Bearer ' . config('services.hubspot.api_key'));
+        $request->headers()->add('Authorization', 'Bearer '.config('services.hubspot.api_key'));
         $confection = new HubspotConnector;
         $promise = $confection->sendAsync($request);
 

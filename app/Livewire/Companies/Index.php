@@ -72,22 +72,22 @@ class Index extends Component
     protected function getCachedCompanyProperties()
     {
         // return cache()->remember('CompanyProperty', now()->addDay(), function () {
-            try {
-                $request = new FetchIndustries;
-                $request->headers()->add('Authorization', 'Bearer '.config('services.hubspot.api_key'));
+        try {
+            $request = new FetchIndustries;
+            $request->headers()->add('Authorization', 'Bearer '.config('services.hubspot.api_key'));
 
-                $confection = new HubspotConnector;
-                $response = $confection->send($request);
-                // dd($response->json());
-                cache()->put('CompanyProperty', $response->json(),now()->addDay());
-                //  $response->json();
-            } catch (\Exception $e) {
-                info('Failed to fetch company properties', [
-                    'status' => $e->getCode(),
-                    'message' => $e->getMessage(),
-                ]);
+            $confection = new HubspotConnector;
+            $response = $confection->send($request);
+            // dd($response->json());
+            cache()->put('CompanyProperty', $response->json(), now()->addDay());
+            //  $response->json();
+        } catch (\Exception $e) {
+            info('Failed to fetch company properties', [
+                'status' => $e->getCode(),
+                'message' => $e->getMessage(),
+            ]);
 
-            }
+        }
         // });
     }
 
