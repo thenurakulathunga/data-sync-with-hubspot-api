@@ -67,9 +67,7 @@ class SyncCompaniesJob implements ShouldQueue
         $promise
             ->then(function (HttpResponse $response) {
                 // Handle Response
-                cache()->remember('Companies', now()->addDay(), function () use ($response) {
-                    return $response->json();
-                });
+                cache()->put('Companies',  $response->json(),now()->addDay());
 
                 ToastTrigger::dispatch(
                     'Job completed successfully!',

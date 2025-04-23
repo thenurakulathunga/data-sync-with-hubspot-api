@@ -27,9 +27,8 @@ class Index extends Component
     {
         $this->validate();
 
-        if (empty(cache()->get('Companies'))) {
-            $this->getCachedCompany();
-        }
+        $this->getCachedCompany();
+
 
         $import = new ContactImport;
         Excel::import($import, $this->contactCsv);
@@ -51,7 +50,6 @@ class Index extends Component
             ->each(function ($chunk) {
                 SyncContactJob::dispatch($chunk->values()->toArray());
             });
-
     }
 
     public function associateContactsWithCompanies(array $contact)
@@ -71,13 +69,11 @@ class Index extends Component
     {
         try {
             $request = new FetchAllCompanies;
-            $request->headers()->add('Authorization', 'Bearer '.config('services.hubspot.api_key'));
+            $request->headers()->add('Authorization', 'Bearer ' . config('services.hubspot.api_key'));
 
             $confection = new HubspotConnector;
             $response = $confection->send($request);
-            cache()->remember('Companies', now()->addDay(), function () use ($response) {
-                return $response->json();
-            });
+            cache()->put('Companies', $response->json(), now()->addDay());
         } catch (\Exception $e) {
             info('Failed to fetch company properties', [
                 'status' => $e->getCode(),
