@@ -1,9 +1,13 @@
 <?php
 
+use App\Models\Company;
+use App\Models\Contact;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
 Route::get('/', function () {
+    dump(Contact::all());
+    dump(Company::all());
     return view('welcome');
 })->name('home');
 
