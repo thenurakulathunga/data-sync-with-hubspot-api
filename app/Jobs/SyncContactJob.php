@@ -53,8 +53,7 @@ class SyncContactJob implements ShouldQueue
                         'types' => [
                             [
                                 'associationCategory' => 'HUBSPOT_DEFINED',
-                                'associationTypeId' => 279,
-                                'label' => 'Primary',
+                                'associationTypeId' => 1,
                             ],
                         ],
                         'to' => [

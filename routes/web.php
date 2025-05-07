@@ -2,12 +2,16 @@
 
 use App\Models\Company;
 use App\Models\Contact;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
 Route::get('/', function () {
-    dump(Contact::all());
-    dump(Company::all());
+    dump(Contact::with('companies')->get());
+    dump(Company::with('contacts')->get());
+    // dump(Company::all());
+    // dump(DB::table('company_contact')->get());
+
     return view('welcome');
 })->name('home');
 
